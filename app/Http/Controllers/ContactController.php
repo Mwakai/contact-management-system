@@ -13,7 +13,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        $contacts = Contact::all();
+        return response()->json($contacts);
     }
 
     /**
@@ -36,7 +37,7 @@ class ContactController extends Controller
             "address" => "sometimes|unique:contacts,address,except,id",
         ]);
 
-        $Contact = Contact::create([
+        Contact::create([
             "name" => $request->name,
             "email" => $request->email,
             "phone" => $request->phone,
@@ -76,16 +77,7 @@ class ContactController extends Controller
     {
         //
     }
-
-    public function contacts()
-    {
-        return Inertia::render('Dashboard', [
-            'contacts' => Contact::with("category")->get(),
-            'message' => session("message")
-        ]);
-    }
-
-    public function create_contact()
+    public function createContact()
     {
         return Inertia::render("CreateContact", [
             
