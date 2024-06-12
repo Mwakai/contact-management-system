@@ -1,6 +1,11 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
+
+const { props } = usePage();
+const contacts = ref(props.contacts);
 </script>
 
 <template>
@@ -21,12 +26,7 @@ import { Head } from '@inertiajs/vue3';
                         >
                             Create Contact
                         </a>
-                        <div
-                            v-if="message"
-                            class="flex text-lg items-center justify-center w-full bg-blue-200 p-3 font-medium text-sm text-green-600"
-                        >
-                            {{ message }}
-                        </div>
+
                         <table class="w-full text-sm text-left text-gray-500 dark:text-white">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                                 <tr>
@@ -81,15 +81,15 @@ import { Head } from '@inertiajs/vue3';
                                     <td class="px-6 py-4">{{ contact.address }}</td>
                                     <td class="px-6 py-4">
                                         <Link
-                                            :href="route('contact.edit', contact.uuid)"
+                                            :href=""
                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                                            >Edit
-                                        </Link>
+                                            >Edit</Link
+                                        >
                                         <Link
-                                            :href="route('contact.delete', contact.uuid)"
+                                            :href=""
                                             class="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                                            >Delete
-                                        </Link>
+                                            >Delete</Link
+                                        >
                                     </td>
                                 </tr>
                             </tbody>
