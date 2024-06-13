@@ -7,13 +7,16 @@ import GroupForm from '@/Components/GroupForm.vue';
 
 const { props } = usePage();
 const groups = props.groups;
-const showModal = ref(false); // State to manage the visibility of the modal
+const showModal = ref(false);
+const editingGroup = ref(null);
 
 const closeModal = () => {
     showModal.value = false;
+    editingGroup.value = null;
 };
 
-const openModal = () => {
+const openModal = (group = null) => {
+    editingGroup.value = group || { name: '' };
     showModal.value = true;
 };
 </script>
@@ -83,11 +86,12 @@ const openModal = () => {
                                     <td class="px-6 py-4">{{ group.name }}</td>
                                     <td class="px-6 py-4">{{ group.contacts_count }}</td>
                                     <td class="px-6 py-4">
-                                        <Link
-                                            :href="`/groups/${group.id}/edit`"
+                                        <button
+                                            @click="openModal(group)"
                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                                            >Edit</Link
                                         >
+                                            Edit
+                                        </button>
                                         <Link
                                             :href="route('groups.destroy', group.id)"
                                             method="delete"
@@ -106,12 +110,15 @@ const openModal = () => {
         </div>
     </AuthenticatedLayout>
 
-    <!-- Modal for Creating Group -->
+    <!-- Modal for Creating/Editing Group -->
     <Modal
         :show="showModal"
-        title="Create Group"
+        title="Create/Edit Group"
         @close="closeModal"
     >
-        <GroupForm @close="closeModal"></GroupForm>
+        <GroupForm
+            :group="editingGroup"
+            @close="closeModal"
+        ></GroupForm>
     </Modal>
 </template>

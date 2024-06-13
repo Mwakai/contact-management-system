@@ -1,15 +1,33 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch, defineProps } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
-const form = useForm({
-    name: '',
+const props = defineProps({
+    group: {
+        type: Object,
+        default: () => ({ name: '' }),
+    },
 });
 
+const form = useForm({
+    name: props.group.name,
+});
+
+watch(
+    () => props.group,
+    (newGroup) => {
+        form.name = newGroup.name;
+    },
+);
+
 const submitForm = () => {
-    form.post('/groups', {
+    const url = props.group.id ? `/groups/${props.group.id}` : '/groups';
+    const method = props.group.id ? 'put' : 'post';
+
+    form[method](url, {
         onSuccess: () => {
             form.reset();
+            props.onClose();
         },
     });
 };
@@ -18,8 +36,6 @@ const submitForm = () => {
 <template>
     <div class="max-w-3xl py-12 mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Add Group</h2>
-            <br />
             <form @submit.prevent="submitForm">
                 <div class="mb-4">
                     <label
