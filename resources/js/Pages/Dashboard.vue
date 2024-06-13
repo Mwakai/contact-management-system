@@ -1,11 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import { usePage, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 
 const { props } = usePage();
 const contacts = ref(props.contacts);
+const groups = ref(props.groups);
+const selectedGroup = ref(null);
+
+const filteredContacts = computed(() => {
+    if (!selectedGroup.value) return contacts.value;
+    return contacts.value.filter((contact) => contact.group_id === selectedGroup.value);
+});
 </script>
 
 <template>
@@ -26,7 +33,24 @@ const contacts = ref(props.contacts);
                         >
                             Create Contact
                         </a>
-
+                        <select
+                            v-model="selectedGroup"
+                            class="mb-4"
+                        >
+                            <option
+                                disabled
+                                value="Please select one"
+                            >
+                                Please select one
+                            </option>
+                            <option
+                                v-for="group in groups"
+                                :value="group.id"
+                                :key="group.id"
+                            >
+                                {{ group.name }}
+                            </option>
+                        </select>
                         <table class="w-full text-sm text-left text-gray-500 dark:text-white">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white">
                                 <tr>
@@ -64,13 +88,19 @@ const contacts = ref(props.contacts);
                                         scope="col"
                                         class="px-6 py-3"
                                     >
+                                        Group
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        class="px-6 py-3"
+                                    >
                                         Action
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr
-                                    v-for="(contact, index) in contacts"
+                                    v-for="(contact, index) in filteredContacts"
                                     :key="index"
                                     class="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
                                 >
@@ -80,16 +110,20 @@ const contacts = ref(props.contacts);
                                     <td class="px-6 py-4">{{ contact.phone }}</td>
                                     <td class="px-6 py-4">{{ contact.address }}</td>
                                     <td class="px-6 py-4">
+                                        {{ groups.find((group) => group.id === contact.group_id)?.name }}
+                                    </td>
+                                    <td class="px-6 py-4">
                                         <Link
-                                            :href=""
+                                            :href="`/contact/edit/${contact.id}`"
                                             class="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
                                             >Edit</Link
                                         >
-                                        <Link
-                                            :href=""
+                                        <button
+                                            @click="deleteContact(contact.id)"
                                             class="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                                            >Delete</Link
                                         >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>

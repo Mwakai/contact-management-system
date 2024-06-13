@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('address');
+            $table->foreignId('group_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
