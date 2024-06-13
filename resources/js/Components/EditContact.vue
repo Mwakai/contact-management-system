@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, watch } from 'vue';
+import { ref, defineProps, watch, defineEmits } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
@@ -16,6 +16,8 @@ const props = defineProps({
     groups: Array,
     onClose: Function,
 });
+
+const emit = defineEmits(['saved']);
 
 const form = useForm({
     name: props.contact.name,
@@ -44,6 +46,7 @@ const submitForm = () => {
         onSuccess: () => {
             form.reset();
             props.onClose();
+            emit('saved');
         },
     });
 };
@@ -131,23 +134,22 @@ const submitForm = () => {
                         </option>
                     </select>
                 </div>
-                <div class="flex justify-end">
+                <div class="flex justify-end space-x-2">
                     <button
                         type="submit"
                         class="bg-blue-500 text-white px-4 py-2 rounded"
                     >
                         Save
                     </button>
-
                     <button
-                        @click="onClose"
+                        type="button"
+                        @click="props.onClose"
                         class="bg-red-500 text-white px-4 py-2 rounded"
                     >
                         Close
                     </button>
                 </div>
             </form>
-            <div class="flex justify-end"></div>
         </div>
     </div>
 </template>

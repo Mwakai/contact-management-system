@@ -12,6 +12,13 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function index()
+    {
+        $contacts = Contact::all();
+        $groups = Group::all();
+        
+        return Inertia::render('Dashboard', compact('contacts', 'groups'));
+    }
     
 
     /**

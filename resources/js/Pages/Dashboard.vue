@@ -52,6 +52,17 @@ const confirmDelete = () => {
         },
     });
 };
+
+const handleSaved = () => {
+    router.get(route('contacts.index'), undefined, {
+        replace: true,
+        preserveState: true,
+        onSuccess: (page) => {
+            contacts.value = page.props.contacts;
+            closeModal();
+        },
+    });
+};
 </script>
 
 <template>
@@ -184,6 +195,7 @@ const confirmDelete = () => {
             :contact="editingContact"
             :groups="groups"
             :onClose="closeModal"
+            @saved="handleSaved"
         ></EditContact>
     </Modal>
 
