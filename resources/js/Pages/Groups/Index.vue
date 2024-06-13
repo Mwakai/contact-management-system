@@ -9,6 +9,7 @@ const { props } = usePage();
 const groups = props.groups;
 const showModal = ref(false);
 const editingGroup = ref(null);
+const modalMode = ref('add'); // State to manage the mode of the modal
 
 const closeModal = () => {
     showModal.value = false;
@@ -17,6 +18,7 @@ const closeModal = () => {
 
 const openModal = (group = null) => {
     editingGroup.value = group || { name: '' };
+    modalMode.value = group ? 'edit' : 'add';
     showModal.value = true;
 };
 </script>
@@ -34,7 +36,7 @@ const openModal = (group = null) => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg p-4">
                         <button
-                            @click="openModal"
+                            @click="openModal()"
                             class="bg-blue-500 hover:bg-blue-700 text-white mb-2 w-42 font-bold py-2 px-4 rounded-full float-right"
                         >
                             Create Group
@@ -113,11 +115,11 @@ const openModal = (group = null) => {
     <!-- Modal for Creating/Editing Group -->
     <Modal
         :show="showModal"
-        title="Create/Edit Group"
         @close="closeModal"
     >
         <GroupForm
             :group="editingGroup"
+            :mode="modalMode"
             @close="closeModal"
         ></GroupForm>
     </Modal>

@@ -7,6 +7,10 @@ const props = defineProps({
         type: Object,
         default: () => ({ name: '' }),
     },
+    mode: {
+        type: String,
+        required: true,
+    },
 });
 
 const form = useForm({
@@ -36,6 +40,10 @@ const submitForm = () => {
 <template>
     <div class="max-w-3xl py-12 mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ mode === 'edit' ? 'Edit Group' : 'Add Group' }}
+            </h2>
+            <br />
             <form @submit.prevent="submitForm">
                 <div class="mb-4">
                     <label
