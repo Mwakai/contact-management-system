@@ -14,6 +14,7 @@ class Contact extends Model
         "email",
         "phone",
         "address",
+        "group_id",
     ];
 
     public function group() {
