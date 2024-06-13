@@ -44,6 +44,17 @@ const confirmDelete = () => {
         },
     });
 };
+
+const handleSaved = () => {
+    router.get(route('groups.index'), undefined, {
+        replace: true,
+        preserveState: true,
+        onSuccess: (page) => {
+            groups.value = page.props.groups;
+            closeModal();
+        },
+    });
+};
 </script>
 
 <template>
@@ -142,6 +153,7 @@ const confirmDelete = () => {
             :group="editingGroup"
             :mode="modalMode"
             @close="closeModal"
+            @saved="handleSaved"
         ></GroupForm>
     </Modal>
 
