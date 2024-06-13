@@ -1,15 +1,18 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Link, usePage, Head } from '@inertiajs/vue3';
+import { Link, usePage, Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import Modal from '@/Components/Modal.vue';
 import GroupForm from '@/Components/GroupForm.vue';
+import ConfirmModal from '@/Components/ConfirmModal.vue';
 
 const { props } = usePage();
-const groups = props.groups;
+const groups = ref(props.groups);
 const showModal = ref(false);
+const showConfirmModal = ref(false);
 const editingGroup = ref(null);
 const modalMode = ref('add'); // State to manage the mode of the modal
+const deletingGroupId = ref(null); // State to hold the group being deleted
 
 const closeModal = () => {
     showModal.value = false;
@@ -20,6 +23,26 @@ const openModal = (group = null) => {
     editingGroup.value = group || { name: '' };
     modalMode.value = group ? 'edit' : 'add';
     showModal.value = true;
+};
+
+const openConfirmModal = (id) => {
+    deletingGroupId.value = id;
+    showConfirmModal.value = true;
+};
+
+const closeConfirmModal = () => {
+    showConfirmModal.value = false;
+    deletingGroupId.value = null;
+};
+
+const confirmDelete = () => {
+    const id = deletingGroupId.value;
+    router.delete(`/groups/${id}`, {
+        onSuccess: () => {
+            groups.value = groups.value.filter((group) => group.id !== id);
+            closeConfirmModal();
+        },
+    });
 };
 </script>
 
@@ -94,14 +117,12 @@ const openModal = (group = null) => {
                                         >
                                             Edit
                                         </button>
-                                        <Link
-                                            :href="route('groups.destroy', group.id)"
-                                            method="delete"
-                                            as="button"
+                                        <button
+                                            @click="openConfirmModal(group.id)"
                                             class="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                                            onclick="return confirm('Are you sure you want to delete this group?')"
-                                            >Delete</Link
                                         >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -123,4 +144,13 @@ const openModal = (group = null) => {
             @close="closeModal"
         ></GroupForm>
     </Modal>
+
+    <!-- Confirm Modal for Deleting Group -->
+    <ConfirmModal
+        :show="showConfirmModal"
+        title="Confirm Delete"
+        message="Are you sure you want to delete this group?"
+        @close="closeConfirmModal"
+        @confirm="confirmDelete"
+    />
 </template>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,11 +12,7 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $contacts = Contact::all();
-        return response()->json($contacts);
-    }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -31,18 +28,15 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            "name" => "required|unique:contacts,name,except,id",
-            "email" => "sometimes|unique:contacts,email,except,id",
-            "phone" => "sometimes|unique:contacts,phone,except,id",
-            "address" => "sometimes|unique:contacts,address,except,id",
+            'name' => 'required|unique:contacts,name',
+            'email' => 'sometimes|unique:contacts,email',
+            'phone' => 'sometimes|unique:contacts,phone',
+            'address' => 'sometimes',
+            'group_id' => 'nullable|exists:groups,id'
         ]);
 
-        Contact::create([
-            "name" => $request->name,
-            "email" => $request->email,
-            "phone" => $request->phone,
-            "address" => $request->address,
-        ]);
+        Contact::create($request->all());
+
         return redirect()->route("dashboard");
     }
 
@@ -67,7 +61,17 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:contacts,name,' . $contact->id,
+            'email' => 'sometimes|unique:contacts,email,' . $contact->id,
+            'phone' => 'sometimes|unique:contacts,phone,' . $contact->id,
+            'address' => 'sometimes',
+            'group_id' => 'nullable|exists:groups,id'
+        ]);
+
+        $contact->update($request->all());
+
+        return redirect()->route("dashboard");
     }
 
     /**
@@ -75,13 +79,9 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
-        //
-    }
-    public function createContact()
-    {
-        return Inertia::render("CreateContact", [
-            
-        ]);
+        $contact->delete();
+
+        return redirect()->route("dashboard");
     }
 
 }

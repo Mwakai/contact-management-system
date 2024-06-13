@@ -10,7 +10,7 @@ const form = useForm({
 });
 
 const submitForm = () => {
-    form.post(route('contact.store'));
+    form.post(route('/contacts'));
 };
 </script>
 

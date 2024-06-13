@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $contacts = Contact::all();
-    $groups = Group::withCount('contacts')->get();
+    $groups = Group::all();
     return Inertia::render('Dashboard', ['contacts' => $contacts, 'groups' => $groups]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -29,14 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Contact Routes
-    Route::get('/create-contact', [ContactController::class, 'createContact'])->name('contact.create');
-    Route::post('/create-contact', [ContactController::class, 'store'])->name('contact.store');
-    Route::get('/contact/edit/{contact}', [ContactController::class, 'edit'])->name('contact.edit');
-    Route::post('/contact/update/{contact}', [ContactController::class, 'update'])->name('contact.update');
-    Route::delete('/contact/delete/{contact}', [ContactController::class, 'destroy'])->name('contact.destroy');
-
-    // Group Routes
+    Route::resource('contacts', ContactController::class);
     Route::resource('groups', GroupController::class);
 });
 
