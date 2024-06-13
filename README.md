@@ -63,6 +63,12 @@ Run the migrations to create the necessary tables:
 php artisan migrate
 ```
 
+## Start Laravel
+
+```bash
+php artisan serve
+```
+
 ## Project Structure
 
 ```bash
