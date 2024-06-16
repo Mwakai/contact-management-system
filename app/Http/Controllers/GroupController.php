@@ -13,7 +13,8 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $groups = Group::all();
+        $groups = Group::withCount('contacts')->get();
+        
         return Inertia::render('Groups/Index', ['groups' => $groups]);
     }
 
