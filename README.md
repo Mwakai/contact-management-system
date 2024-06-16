@@ -68,6 +68,11 @@ php artisan migrate
 ```bash
 php artisan serve
 ```
+## Start FrontEnd
+Open a new terminal and run
+```bash
+npm run dev
+```
 
 ## Project Structure
 
